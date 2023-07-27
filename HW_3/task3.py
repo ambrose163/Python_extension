@@ -1,29 +1,24 @@
-"""
-Напишите программу, которая принимает две строки вида “a/b” - дробь с числителем и знаменателем.
-Программа должна возвращать сумму и произведение* дробей. Для проверки своего кода используйте модуль fractions.
-"""
+'''
+В большой текстовой строке подсчитать количество встречаемых слов и вернуть 10 самых частых.
+Не учитывать знаки препинания и регистр символов.
+За основу возьмите любую статью из википедии или из документации к языку.
+'''
 
-from fractions import Fraction
+import operator
 
-frac1 = input("Введите первую дробь: ")
-frac2 = input("Введите вторую дробь: ")
+with open("task3_text.txt") as file:
+    text = file.read().lower().replace(",", "").replace(".", "").split()
 
-numer1, denomin1 = map(int, frac1.split("/"))
-numer2, denomin2 = map(int, frac2.split("/"))
+TOP_WORDS = 10
+count_words = 0
+dct = {}
 
-f1 = Fraction(numer1, denomin1)
-f2 = Fraction(numer2, denomin2)
-print(f"\n*ПРОВЕРКА* Сумма дробей: {f1 + f2}, Произведение дробей: {f1 * f2} \n")
+for el in range(len(text)):
+    dct.update([(text[el], text.count(text[el]))])
+sorted_dct = dict(sorted(dct.items(), key=operator.itemgetter(1)))
 
-if denomin1 != denomin2:
-    numer_sum = numer1 * denomin2 + numer2 * denomin1
-    denomin_sum = denomin1 * denomin2
-else:
-    numer_sum = numer1 + numer2
-    denomin_sum = denomin1
-
-numer_prod = numer1 * numer2
-denomin_prod = denomin1 * denomin2
-
-print(f"Сумма дробей: {numer_sum}/{denomin_sum}")
-print(f"Произведение дробей: {numer_prod}/{denomin_prod}")
+for key, value in reversed(sorted_dct.items()):
+    count_words += 1
+    print(f'#{count_words} {key} {value}')
+    if count_words == TOP_WORDS:
+        break
