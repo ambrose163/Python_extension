@@ -1,21 +1,29 @@
 """
-3. Напишите код, который запрашивает число и сообщает, является ли оно простым или составным.
-Используйте правило для проверки: “Число является простым, если делится нацело только на единицу и на себя”.
-Сделайте ограничение на ввод отрицательных чисел и чисел больше 100 тысяч.
+Напишите программу, которая принимает две строки вида “a/b” - дробь с числителем и знаменателем.
+Программа должна возвращать сумму и произведение* дробей. Для проверки своего кода используйте модуль fractions.
 """
 
-number = int(input("Введите число от 0 до 100000: "))
-count = 0
+from fractions import Fraction
 
-if number < 0 or number > 100000:
-    print("Введено некорректно число. Попробуйте снова")
-elif number == 0 or number == 1:
-    print(f"Число {number} не является ни простым, ни составным")
+frac1 = input("Введите первую дробь: ")
+frac2 = input("Введите вторую дробь: ")
+
+numer1, denomin1 = map(int, frac1.split("/"))
+numer2, denomin2 = map(int, frac2.split("/"))
+
+f1 = Fraction(numer1, denomin1)
+f2 = Fraction(numer2, denomin2)
+print(f"\n*ПРОВЕРКА* Сумма дробей: {f1 + f2}, Произведение дробей: {f1 * f2} \n")
+
+if denomin1 != denomin2:
+    numer_sum = numer1 * denomin2 + numer2 * denomin1
+    denomin_sum = denomin1 * denomin2
 else:
-    for i in range(2, number + 1):
-        if number % i == 0:
-            count += 1
-    if count == 1:
-        print(f"Число {number} является простым")
-    else:
-        print(f"Число {number} является составным")
+    numer_sum = numer1 + numer2
+    denomin_sum = denomin1
+
+numer_prod = numer1 * numer2
+denomin_prod = denomin1 * denomin2
+
+print(f"Сумма дробей: {numer_sum}/{denomin_sum}")
+print(f"Произведение дробей: {numer_prod}/{denomin_prod}")
