@@ -1,29 +1,19 @@
-"""
-Напишите программу, которая получает целое число и возвращает его шестнадцатеричное строковое представление.
-Функцию hex используйте для проверки своего результата.
-"""
+'''
+Дан список повторяющихся элементов.
+Вернуть список с дублирующимися элементами.
+В результирующем списке не должно быть дубликатов.
+'''
 
-num_dec = int(input("Введите число: "))
-res = ''
-DIVIDER = 16
+my_list = [1, 1, 2, 3, 3, 3, 4]
 
-print(hex(num_dec))
+dupl_elem = set()
+for el in range(len(my_list)):
+    if my_list.count(my_list[el]) > 1:
+        dupl_elem.add(my_list[el])
+print(f"С применением множеств: {list(dupl_elem)}")
 
-while num_dec > 0:
-    if num_dec % DIVIDER < 10:
-        res = str(num_dec % DIVIDER) + res
-    elif num_dec % DIVIDER == 10:
-        res = 'A' + res
-    elif num_dec % DIVIDER == 11:
-        res = 'B' + res
-    elif num_dec % DIVIDER == 12:
-        res = 'C' + res
-    elif num_dec % DIVIDER == 13:
-        res = 'D' + res
-    elif num_dec % DIVIDER == 14:
-        res = 'E' + res
-    elif num_dec % DIVIDER == 15:
-        res = 'F' + res
-    num_dec //= DIVIDER
-
-print(res)
+dupl_elem = []
+for el in range(len(my_list)):
+    if my_list.count(my_list[el]) > 1 and dupl_elem.count(my_list[el]) < 1:
+        dupl_elem.append(my_list[el])
+print(f"Без применения множеств: {dupl_elem}")
