@@ -1,24 +1,68 @@
-'''
-В большой текстовой строке подсчитать количество встречаемых слов и вернуть 10 самых частых.
-Не учитывать знаки препинания и регистр символов.
-За основу возьмите любую статью из википедии или из документации к языку.
-'''
+"""
+Возьмите задачу о банкомате из семинара 2. Разбейте её на отдельные операции — функции.
+Дополнительно сохраняйте все операции поступления и снятия средств в список.
+"""
 
-import operator
 
-with open("task3_text.txt") as file:
-    text = file.read().lower().replace(",", "").replace(".", "").split()
+def quit():
+    return "Выходим из банкомата"
 
-TOP_WORDS = 10
-count_words = 0
-dct = {}
 
-for el in range(len(text)):
-    dct.update([(text[el], text.count(text[el]))])
-sorted_dct = dict(sorted(dct.items(), key=operator.itemgetter(1)))
+def add_money(summ_add, count_add, summ):
+    if summ_add % 50 == 0:
+        summ += summ_add
+        count_add += 1
+        if count_add % 3 == 0:
+            summ *= 1.03
+        operations_list.append("+" + str(summ_add))
+    else:
+        print("Введена некорректная сумма (не кратна 50)")
+    return summ
 
-for key, value in reversed(sorted_dct.items()):
-    count_words += 1
-    print(f'#{count_words} {key} {value}')
-    if count_words == TOP_WORDS:
+
+def out_summ(summ_out, count_out, summ):
+    comission = summ_out * 0.015
+    if comission < 30:
+        comission = 30
+    elif comission > 600:
+        comission = 600
+
+    if summ_out + comission > summ:
+        print("Недостаточно средств")
+
+    else:
+        if summ_out % 50 == 0:
+            summ -= summ_out + comission
+
+            count_out += 1
+            if count_out % 3 == 0:
+                summ *= 1.03
+            operations_list.append("-" + str(summ_out))
+        else:
+            print("Введена некорректная сумма")
+    return summ
+
+
+summ = 0
+count_add = 0
+count_out = 0
+operations_list = []
+
+while True:
+
+    if summ > 5_000_000:
+        print("С вас сняли налог на богатство", summ * 0.1)
+        summ -= summ * 0.1
+
+    action = input("\nДействие: ")
+
+    if action == "q":
+        print(quit())
+        print(f"Сумма: {summ}\nСписок операций: {operations_list}")
         break
+    elif action == "a":
+        summ = add_money(int(input("Сумма пополнения: ")), count_add, summ)
+    elif action == "o":
+        summ = out_summ(int(input("Сумма снятия: ")), count_out, summ)
+
+    print(f"Сумма: {summ}\nСписок операций: {operations_list}")
