@@ -1,19 +1,13 @@
-'''
-Дан список повторяющихся элементов.
-Вернуть список с дублирующимися элементами.
-В результирующем списке не должно быть дубликатов.
-'''
+"""
+Напишите функцию, принимающую на вход только ключевые параметры и возвращающую словарь,
+где ключ — значение переданного аргумента, а значение — имя аргумента. Если ключ не хешируем,
+используйте его строковое представление.
+"""
 
-my_list = [1, 1, 2, 3, 3, 3, 4]
 
-dupl_elem = set()
-for el in range(len(my_list)):
-    if my_list.count(my_list[el]) > 1:
-        dupl_elem.add(my_list[el])
-print(f"С применением множеств: {list(dupl_elem)}")
+def function(**kwargs):
+    return {v if v.__hash__ is not None else str(v): k for k, v in kwargs.items()}
 
-dupl_elem = []
-for el in range(len(my_list)):
-    if my_list.count(my_list[el]) > 1 and dupl_elem.count(my_list[el]) < 1:
-        dupl_elem.append(my_list[el])
-print(f"Без применения множеств: {dupl_elem}")
+
+print(function(a=99, b=100, c=23))
+print(function(a1="Hello world", a2=1, a3="1", a4=[1, 2]))
