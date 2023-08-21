@@ -1,59 +1,36 @@
 """
-Напишите следующие функции:
-Нахождение корней квадратного уравнения
-Генерация csv файла с тремя случайными числами в каждой строке. 100-1000 строк.
-Декоратор, запускающий функцию нахождения корней квадратного уравнения с каждой тройкой чисел из csv файла.
-Декоратор, сохраняющий переданные параметры и результаты работы функции в json файл.
+Класс-фабрика принимает тип животного (название одного из созданных классов) и параметры для этого типа.
+Внутри класса создайте экземпляр на основе переданного типа и верните его из класса-фабрики.
 """
 
-import csv
-import json
-from random import randint
-import math
-import functools
+from sem_task6 import Animal, Fishes, Birds, Mammals
 
 
-# Нахождение корней квадратного уравнения
-def find_roots(a, b, c):
-    discriminant = b ** 2 - 4 * a * c
-    if discriminant >= 0:
-        x1 = (-b + math.sqrt(discriminant)) / (2 * a)
-        x2 = (-b - math.sqrt(discriminant)) / (2 * a)
-        return (x1, x2)
-    else:
-        return ("Complex roots")
+class AnimalsFactory:
+    def __init__(self):
+        self.dict_type_str = {str(item.__name__): item for item in Animal.__subclasses__()}
+        self.list_type_cls = Animal.__subclasses__()
+
+    def create_animal(self, type_animal, *args):
+        if type(type_animal) == str:
+
+            if self.dict_type_str.get(type_animal) is None:
+                raise ValueError('такого вида животного нет')
+
+            return self.dict_type_str[type_animal](*args)
+        else:
+            if type_animal in self.list_type_cls:
+                return type_animal(*args)
+            else:
+                raise ValueError('нe входит в класс животных')
 
 
-# Генерация csv файла с тремя случайными числами в каждой строке. 100-1000 строк.
-def generate_csv(filename):
-    with open(filename, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        for _ in range(randint(100, 1000)):
-            writer.writerow([randint(0, 100) for _ in range(3)])
+if __name__ == '__main__':
+    fabric = AnimalsFactory()
+    fish = fabric.create_animal(Fishes, 'Карась', 'Федя', 1, 15)
+    bird = fabric.create_animal(Birds, 'Синичка', 'Невеличка', 1, 'зеленый')
+    animal = fabric.create_animal(Mammals, 'Панда', 'Кунг-Фу', 7, 'медведь')
 
-
-# Декоратор, запускающий функцию нахождения корней квадратного уравнения с каждой тройкой чисел из csv файла.
-def from_csv_decorator(func):
-    @functools.wraps(func)
-    def wrapper(filename):
-        results = []
-        with open(filename, mode='r') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                a, b, c = map(int, row)
-                results.append(func(a, b, c))
-        return results
-
-    return wrapper
-
-
-# Декоратор, сохраняющий переданные параметры и результаты работы функции в json файл.
-def log_decorator(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        with open('log.json', 'a') as f:
-            json.dump({'func': func.__name__, 'args': args, 'kwargs': kwargs, 'result': result}, f)
-        return result
-
-    return wrapper
+    print(fish.get_kind())
+    print(bird.get_specific())
+    print(animal.get_specific())
