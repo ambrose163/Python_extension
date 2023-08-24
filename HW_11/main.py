@@ -1,9 +1,9 @@
 from student import Student
 
 if __name__ == '__main__':
-    student = Student('Dmitriy', 'Alexandrovich', 'Filatov', 'filatov.csv')
-    # student = Student('Dmitriy', 'alexandrovich', 'Filatov', 'filatov.csv') # строчная буква
-    # student = Student('Dmitry', 'Alexandrovich', 'F1latov', 'filatov.csv') # цифра в имени
+    student = Student('Dmitriy', 'Vyacheslavovich', 'Ivanov', 'ivanov.csv')
+    # student = Student('Dmitriy', 'vyacheslavovich', 'Ivanov', 'ivanov.csv') # строчная буква
+    # student = Student('Dmitry', 'Vyacheslavovich', 'Ivan0v', 'ivanov.csv') # цифра в имени
 
     student.add_test_score("math", 63)
     student.add_test_score("math", 93)
