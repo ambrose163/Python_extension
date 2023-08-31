@@ -1,49 +1,47 @@
-"""
-Создайте класс студента.
-Используя дескрипторы проверяйте ФИО на первую заглавную букву и наличие только букв.
-Названия предметов должны загружаться из файла CSV при создании экземпляра. Другие предметы в экземпляре недопустимы.
-Для каждого предмета можно хранить оценки (от 2 до 5) и результаты тестов (от 0 до 100).
-Также экземпляр должен сообщать средний балл по тестам для каждого предмета и по оценкам всех предметов вместе взятых.
-"""
-
-from name_descriptor import NameDescriptor
+from student_exeptions import StudentNameError, InvalidSubjectError, InvalidScoreError
 import csv
 
 
 class Student:
-    first_name = NameDescriptor()
-    middle_name = NameDescriptor()
-    last_name = NameDescriptor()
+    def __init__(self, name, csv_filename):
+        if not name.istitle() or not name.replace(" ", "").isalpha():
+            raise StudentNameError()
 
-    def __init__(self, first_name, middle_name, last_name, csv_path):
-        self.first_name = first_name
-        self.middle_name = middle_name
-        self.last_name = last_name
+        self.name = name
+        self.subjects = self.load_subjects_from_csv(csv_filename)
+        self.scores = {subject: [] for subject in self.subjects}
+        self.test_results = {subject: [] for subject in self.subjects}
 
-        with open(csv_path, 'r') as file:
+    def load_subjects_from_csv(self, csv_filename):
+        with open(csv_filename, "r") as file:
             reader = csv.reader(file)
-            self.subjects = {row[0]: {"grades": [], "test_scores": []} for row in reader}
+            return next(reader)
 
-    def add_grade(self, subject, grade):
+    def add_score(self, subject, score):
         if subject not in self.subjects:
-            raise ValueError(f"Предмет {subject} не найден.")
-        if grade < 2 or grade > 5:
-            raise ValueError("Оценка должна быть от 2 до 5.")
-        self.subjects[subject]["grades"].append(grade)
+            raise InvalidSubjectError(subject)
 
-    def add_test_score(self, subject, score):
+        if score < 2 or score > 5:
+            raise InvalidScoreError(score)
+
+        self.scores[subject].append(score)
+
+    def add_test_result(self, subject, result):
         if subject not in self.subjects:
-            raise ValueError(f"Предмет {subject} не найден.")
-        if score < 0 or score > 100:
-            raise ValueError("Результат теста должен быть от 0 до 100.")
-        self.subjects[subject]["test_scores"].append(score)
+            raise InvalidSubjectError(subject)
+
+        if result < 0 or result > 100:
+            raise InvalidScoreError(result, score_type="Результат теста")
+
+        self.test_results[subject].append(result)
 
     def average_test_score(self, subject):
         if subject not in self.subjects:
-            raise ValueError(f"Предмет {subject} не найден.")
-        scores = self.subjects[subject]["test_scores"]
-        return sum(scores) / len(scores) if scores else 0
+            raise InvalidSubjectError(subject)
 
-    def average_grade(self):
-        total_grades = [grade for subj in self.subjects.values() for grade in subj["grades"]]
-        return sum(total_grades) / len(total_grades) if total_grades else 0
+        return sum(self.test_results[subject]) / len(self.test_results[subject]) if self.test_results[subject] else 0
+
+    def average_score(self):
+        total_scores = sum([sum(scores) for scores in self.scores.values()])
+        total_count = sum([len(scores) for scores in self.scores.values()])
+        return total_scores / total_count if total_count else 0
